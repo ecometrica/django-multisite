@@ -2,6 +2,7 @@ import os
 import tempfile
 import warnings
 
+import django
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import (ImproperlyConfigured, SuspiciousOperation,
@@ -9,7 +10,7 @@ from django.core.exceptions import (ImproperlyConfigured, SuspiciousOperation,
 from django.http import Http404, HttpResponse
 from django.test import TestCase
 from django.test.client import RequestFactory as DjangoRequestFactory
-from django.utils.unittest import skipUnless
+from django.utils.unittest import skipUnless, skipIf
 
 try:
     from django.test.utils import override_settings
@@ -193,6 +194,7 @@ class DynamicSiteMiddlewareFallbackTest(TestCase):
         self.assertEqual(self.middleware.process_request(request), None)
         self.assertEqual(settings.SITE_ID, site.pk)
 
+    @skipIf(django.VERSION >= (1, 5), 'No function based generic views in Django 1.5+')
     def test_string_function(self):
         # Function based
         settings.MULTISITE_FALLBACK = 'django.views.generic.simple.redirect_to'
@@ -215,6 +217,7 @@ class DynamicSiteMiddlewareFallbackTest(TestCase):
         self.assertEqual(response['Location'],
                          settings.MULTISITE_FALLBACK_KWARGS['url'])
 
+    @skipIf(django.VERSION >= (1, 5), 'No function based generic views in Django 1.5+')
     def test_function_view(self):
         from django.views.generic.simple import redirect_to
         settings.MULTISITE_FALLBACK = redirect_to
@@ -335,6 +338,8 @@ class SiteCacheTest(TestCase):
         self.site.delete()
         self.assertRaises(KeyError, self.cache.__getitem__, self.site.id)
 
+    def test_get_method(self):
+        self.assertEqual(self.cache.get('foobar', 'baz'), 'baz')
 
 class TestSiteID(TestCase):
     def setUp(self):
