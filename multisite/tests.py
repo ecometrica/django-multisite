@@ -335,6 +335,8 @@ class SiteCacheTest(TestCase):
         self.site.delete()
         self.assertRaises(KeyError, self.cache.__getitem__, self.site.id)
 
+    def test_get_method(self):
+        self.assertEqual(self.cache.get('foobar', 'baz'), 'baz')
 
 class TestSiteID(TestCase):
     def setUp(self):

@@ -108,6 +108,12 @@ class DictCache(object):
     def __init__(self, cache):
         self._cache = cache
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
     def __getitem__(self, key):
         """x.__getitem__(y) <==> x[y]"""
         hash(key)               # Raise TypeError if unhashable
