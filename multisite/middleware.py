@@ -11,7 +11,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import get_callable
 from django.db.models.signals import pre_save, post_delete, post_init
 from django.http import Http404, HttpResponsePermanentRedirect
-from django.utils.hashcompat import md5_constructor
+from hashlib import md5 as md5_constructor
 
 from .models import Alias
 
