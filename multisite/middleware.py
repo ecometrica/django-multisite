@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import tempfile
+import sys
 from urlparse import urlsplit, urlunsplit
 
 from django.conf import settings
@@ -11,7 +12,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import get_callable
 from django.db.models.signals import pre_save, post_delete, post_init
 from django.http import Http404, HttpResponsePermanentRedirect
-from django.utils.hashcompat import md5_constructor
+#from django.utils.hashcompat import md5_constructor
+if sys.version_info >= (2.5):
+    import hashlib
+    md5_constructor = hashlib.md5
+else:
+    import md5
+    md5_constructor = md5.new
 
 from .models import Alias
 
