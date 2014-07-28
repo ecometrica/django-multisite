@@ -61,17 +61,13 @@ class DynamicSiteMiddleware(object):
 
         Development mode is either:
         - Running tests, i.e. manage.py test
-        - Running locally in settings.DEBUG = True, where the hostname is
-          a top-level name, i.e. localhost
+        - Running with settings.DEBUG = True
         """
         # When running tests, django.core.mail.outbox exists and
         # netloc == 'testserver'
         is_testserver = (hasattr(mail, 'outbox') and
                          netloc in ('testserver', 'adminsite.com'))
-        # When using runserver, assume that host will only have one path
-        # component. This covers 'localhost' and your machine name.
-        is_local_debug = (settings.DEBUG and len(netloc.split('.')) == 1)
-        if is_testserver or is_local_debug:
+        if is_testserver or settings.DEBUG:
             try:
                 # Prefer the default SITE_ID
                 site_id = settings.SITE_ID.get_default()
