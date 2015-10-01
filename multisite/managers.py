@@ -83,20 +83,22 @@ class SpanningCurrentSiteManager(managers.CurrentSiteManager):
         as a string, returns the associated model."""
         return model._meta.get_field_by_name(fieldname)[0].rel.to
 
+try:
+    class PathAssistedCurrentSiteManager(models.CurrentSiteManager):
+        """
+        Deprecated: Use multisite.managers.SpanningCurrentSiteManager instead.
+        """
+        def __init__(self, field_path):
+            warn(('Use multisite.managers.SpanningCurrentSiteManager instead of '
+                  'multisite.managers.PathAssistedCurrentSiteManager'),
+                 DeprecationWarning, stacklevel=2)
+            super(PathAssistedCurrentSiteManager, self).__init__()
+            self.__field_path = field_path
 
-class PathAssistedCurrentSiteManager(models.CurrentSiteManager):
-    """
-    Deprecated: Use multisite.managers.SpanningCurrentSiteManager instead.
-    """
-    def __init__(self, field_path):
-        warn(('Use multisite.managers.SpanningCurrentSiteManager instead of '
-              'multisite.managers.PathAssistedCurrentSiteManager'),
-             DeprecationWarning, stacklevel=2)
-        super(PathAssistedCurrentSiteManager, self).__init__()
-        self.__field_path = field_path
-
-    def get_query_set(self):
-        from django.contrib.sites.models import Site
-        return super(models.CurrentSiteManager, self).get_query_set().filter(
-                    **{self.__field_path: Site.objects.get_current()}
-                )
+        def get_query_set(self):
+            from django.contrib.sites.models import Site
+            return super(models.CurrentSiteManager, self).get_query_set().filter(
+                        **{self.__field_path: Site.objects.get_current()}
+                    )
+except AttributeError:
+    pass
