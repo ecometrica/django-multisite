@@ -16,7 +16,24 @@ Replace your SITE_ID in settings.py to::
     from multisite import SiteID
     SITE_ID = SiteID()
 
-Add to settings.py TEMPLATE_LOADERS::
+Add to your settings.py TEMPLATES loaders in the OPTIONS section::
+
+    TEMPLATES = [
+        ...
+        {
+            ...
+            'OPTIONS': {
+                'loaders': (
+                    'multisite.template_loader.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                )
+            }
+            ...
+        }
+        ...
+    ]
+
+Or for Django 1.7 and earlier, add to settings.py TEMPLATES_LOADERS::
 
     TEMPLATE_LOADERS = ( 
         'multisite.template_loader.Loader',
