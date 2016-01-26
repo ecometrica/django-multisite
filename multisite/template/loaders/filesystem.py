@@ -17,7 +17,13 @@ from django.utils._os import safe_join
 class Loader(FilesystemLoader):
     def get_template_sources(self, template_name, template_dirs=None):
         if not template_dirs:
-            template_dirs = settings.TEMPLATE_DIRS
+            try:
+                template_dirs = [tdir
+                                 for tmpl in settings.TEMPLATES
+                                 for tdir in tmpl['DIRS']]
+            except AttributeError:
+                # Older Django, no settings.TEMPLATES?
+                template_dirs = settings.TEMPLATE_DIRS
 
         domain = Site.objects.get_current().domain
         default_dir = getattr(settings, 'MULTISITE_DEFAULT_TEMPLATE_DIR', 'default')
