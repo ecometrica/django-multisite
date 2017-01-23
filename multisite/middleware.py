@@ -21,6 +21,12 @@ else:
     def get_cache(cache_alias):
         return caches[cache_alias]
 
+try:
+    # Django > 1.10 uses MiddlewareMixin
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import get_callable
 from django.db.models.signals import pre_save, post_delete, post_init
@@ -36,8 +42,9 @@ except ImportError:
 from .models import Alias
 
 
-class DynamicSiteMiddleware(object):
-    def __init__(self):
+class DynamicSiteMiddleware(MiddlewareMixin):
+    def __init__(self, *args, **kwargs):
+        super(DynamicSiteMiddleware, self).__init__(*args, **kwargs)
         if not hasattr(settings.SITE_ID, 'set'):
             raise TypeError('Invalid type for settings.SITE_ID: %s' %
                             type(settings.SITE_ID).__name__)
