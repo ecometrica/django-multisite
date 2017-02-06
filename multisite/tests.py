@@ -903,3 +903,69 @@ class TestCookieDomainMiddleware(TestCase):
             request = self.factory.get('/', host='www.us.app.example.com')
             cookies = middleware.process_response(request, response).cookies
             self.assertEqual(cookies['a']['domain'], '.app.example.com')
+
+
+
+def debug(request, *args, **kwargs):
+    from django.template import Template, RequestContext
+    tt = Template("Site is {{ current_site }}.")
+    ctx = {'current_site': Site.objects.get_current()}
+    return HttpResponse(tt.render(RequestContext(request, ctx)))
+
+
+urlpatterns = [
+    url(r'^debug/$', debug)
+]
+
+
+@skipIf(django.VERSION < (1, 7), "Only works for Django 1.7+")
+@override_settings(
+    ALLOWED_HOSTS=['*'],
+    ROOT_URLCONF=__name__,
+    SITE_ID=SiteID(default=1),
+    INSTALLED_APPS=[
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sites',
+        'multisite',
+    ],
+    TEMPLATES=[
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates'
+        }
+    ]
+)
+class TestMiddleware(TestCase):
+
+    @override_settings()
+    def test_middleware(self):
+        client = Client()
+        site_count = 5
+        for site_idx in range(site_count):
+            Site.objects.create(
+                name='SITE {idx}'.format(idx=site_idx),
+                domain='site{idx}.example.com'.format(idx=site_idx)
+            )
+        with self.modify_settings(MIDDLEWARE_CLASSES={
+            'append': 'multisite.middleware.DynamicSiteMiddleware'
+        }):
+            for site in Site.objects.all():
+                response = client.get('/debug/',  HTTP_HOST=site.domain)
+                self.assertEqual(response.context['current_site'], site)
+
+    @skipIf(django.VERSION < (1, 10), "Only works for Django 1.10+")
+    @override_settings(MIDDLEWARE=list(settings.MIDDLEWARE_CLASSES))
+    def test_middleware_new(self):
+        client = Client()
+        site_count = 5
+        for site_idx in range(site_count):
+            Site.objects.create(
+                name='SITE {idx}'.format(idx=site_idx),
+                domain='site{idx}.example.com'.format(idx=site_idx)
+            )
+        with self.modify_settings(MIDDLEWARE={
+            'append': 'multisite.middleware.DynamicSiteMiddleware'
+        }):
+            for site in Site.objects.all():
+                response = client.get('/debug/',  HTTP_HOST=site.domain)
+                self.assertEqual(response.context['current_site'], site)
