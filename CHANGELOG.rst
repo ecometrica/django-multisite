@@ -2,31 +2,45 @@
 Release Notes
 =============
 
+1.4.0
+-----
+
+* Support Django 1.10 (PR #38)
+* Support Python 3
+* Use setuptools over distutils, and integrate the tests with them
+* Package `test_versions` to help ensure old versions do not rot
+
 1.3.1
 -----
+
 * Add default for SiteID in the README (PR #31)
 * Respect the CACHE_MULTISITE_ALIAS in SiteCache (PR #34)
 * Replace deprecated ExtractResult().tld with .suffic (PR #32)
 
 1.3.0
 -----
+
 * Fix tempfile issue with update_public_suffix_list command
 * Support for tldextract version >= 2.0
 
 1.2.6
 ----
+
 * Pin the tldextract dependency to version < 2.0, which breaks API.
 
 1.2.5
 ----
+
 * Make template loading more resilient to changes in django (thanks to jbazik for the contribution)
 
 1.2.4
 -----
+
 * Fix domain validation so it's called after the pre_save signal
 
 1.2.3
 -----
+
 * Fix a broken test, due to a django uniqueness constraint in 1.9
 
 1.2.2

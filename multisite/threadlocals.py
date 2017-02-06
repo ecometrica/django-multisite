@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*
 from __future__ import unicode_literals
+from __future__ import absolute_import
+
+import sys
 
 from django.utils import six
 from contextlib import contextmanager
@@ -130,8 +133,12 @@ class SiteDomain(SiteID):
         ``default`` is the default domain name, resolved to SITE_ID, if
         that is unset.
         """
-        if not isinstance(default, basestring):
-            raise ValueError("%r is not a valid default domain." % default)
+        # make sure they passed us a string; doing this is the single hardest py2/py3 compat headache.
+        # http://python-future.org/compatible_idioms.html#basestring and
+        # https://github.com/PythonCharmers/python-future/blob/master/src/past/types/basestring.py
+        # are not super informative, so just fall back on a literal version check:
+        if not isinstance(default, basestring if sys.version_info.major == 2 else str):
+            raise TypeError("%r is not a valid default domain." % default)
         self.default_domain = default
         self.default = None
         self.reset()

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import absolute_import
 
 import os
 import tempfile
@@ -8,6 +9,7 @@ try:
 except ImportError:
     from urllib.parse import urlsplit, urlunsplit
 
+import django
 from django.conf import settings
 from django.contrib.sites.models import Site, SITE_CACHE
 from django.core import mail
@@ -143,8 +145,17 @@ class DynamicSiteMiddleware(MiddlewareMixin):
         if callable(fallback):
             view = fallback
         else:
-            view = get_callable(fallback, can_fail=True)
-            if not callable(view):
+            try:
+                view = get_callable(fallback)
+                if django.VERSION < (1,8):
+                    # older django's get_callable falls through on error,
+                    # returning the input as output
+                    # which notably is definitely not a callable here
+                    if not callable(view):
+                        raise ImportError()
+            except ImportError:
+                # newer django forces this to be an error, which is tidier.
+                # we rewrite the error to be a bit more helpful to our users.
                 raise ImproperlyConfigured(
                     'settings.MULTISITE_FALLBACK is not callable: %s' %
                     fallback

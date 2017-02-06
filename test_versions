@@ -1,0 +1,36 @@
+#!/bin/sh
+# systematically run tests under all combinations
+#  of pythons and djangos that we support.
+
+# ensure we are running in a known location:
+# the location of the current file
+cd $(dirname $0)
+
+for PYTHON in python2 python3; do
+    # *nuke* the virtualenv, if it exists
+    if [ -e .venv-$PYTHON ]; then
+        rm -r .venv-$PYTHON;
+    fi
+    virtualenv -p $PYTHON .venv-$PYTHON
+
+    echo
+    echo ">>> Switched to $PYTHON <<<"
+    echo
+
+    . .venv-$PYTHON/bin/activate
+    for DJANGO in 1.6 1.7 1.8 1.9 1.10; do
+        if [ $PYTHON == python3 -a \( $DJANGO = 1.6 -o $DJANGO = 1.7 \) ]; then
+            echo "Django-$DJANGO is unsupported on python3"
+            echo
+            continue
+        fi
+        pip install django==$DJANGO
+        echo $PYTHON/django$DJANGO
+        if ! python setup.py test; then
+            echo
+            echo "Failed under $PYTHON and django-$DJANGO"
+            exit 1
+        fi
+    done
+    deactivate
+done

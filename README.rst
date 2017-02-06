@@ -101,8 +101,6 @@ domains, such as::
 Cross-domain cookies
 --------------------
 
-*New in version 0.3.0.*
-
 In order to support `cross-domain cookies`_,
 for purposes like single-sign-on,
 prepend the following to the top of
@@ -136,3 +134,26 @@ run::
 
 .. _cross-domain cookies: http://en.wikipedia.org/wiki/HTTP_cookie#Domain_and_Path
 .. _Public Suffix List: http://publicsuffix.org/
+
+
+Tests
+-----
+
+To run the tests::
+
+    python setup.py test
+
+Before deploying a change, to verify it has not broken anything you should run::
+
+    test_versions
+
+This runs the tests under every supported combination of Django and Python,
+isolated by creating virtualenvs. If a test breaks, it will quit, with the
+virtualenv intact in .venv-python2, or .venv-python3, depending on what broke. 
+You can investigate the broken version manually with::
+
+    . .venv-python2/bin/activate  # or .venv-python3
+    python setup.py test
+
+(of course, as new versions are supported and old are retired,
+please keep test_versions up to date)
