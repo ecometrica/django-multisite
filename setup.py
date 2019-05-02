@@ -9,7 +9,7 @@ _dir_ = os.path.dirname(__file__)
 if sys.version_info < (3, 4):
     install_requires = ['Django>=1.8,<2.0', 'tldextract>=1.2']
 else:
-    install_requires = ['Django>=1.8,<2.1', 'tldextract>=1.2']
+    install_requires = ['Django>=1.8,<2.3', 'tldextract>=1.2']
 
 
 def long_description():
