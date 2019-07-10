@@ -27,7 +27,7 @@ class AliasInline(admin.TabularInline):
     extra = 1
     ordering = ('domain',)
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """Returns only non-canonical aliases."""
         qs = self.model.aliases.get_queryset()
         ordering = self.ordering or ()
