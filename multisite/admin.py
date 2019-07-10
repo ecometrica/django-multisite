@@ -89,7 +89,7 @@ class MultisiteModelAdmin(admin.ModelAdmin):
 
     filter_sites_by_current_object = False
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         """
         Filters lists of items to items belonging to sites assigned to the
         current member.
