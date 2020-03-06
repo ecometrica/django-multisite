@@ -2,6 +2,12 @@
 Release Notes
 =============
 
+1.7.0
+-----
+
+* Support Django 2.1 and 2.2 (PR #59 - thanks @ribeiroti!)
+* Replace queryset with get_queryset in admin (PR #61 - thanks @vit-ivanov!)
+
 1.6.0
 -----
 * Fix KeyError from _get_site_by_id
