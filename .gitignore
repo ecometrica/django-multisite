@@ -12,5 +12,6 @@ eggs
 parts
 MANIFEST
 multisite/*.egg-info
+.coverage
 .tox/
 .pytest_cache/

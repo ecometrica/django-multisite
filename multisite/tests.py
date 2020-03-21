@@ -1060,8 +1060,7 @@ class TemplateLoaderTests(TestCase):
 class UpdatePublicSuffixListCommandTestCase(TestCase):
 
     def setUp(self):
-        self.cache_file = '/tmp/multisite_tld.dat'
-
+        self.cache_file = os.path.join(tempfile.gettempdir(), "multisite_tld.dat")
         # save the tldextract logger output to a buffer to test output
         self.out = StringIO()
         self.logger = logging.getLogger('tldextract')
