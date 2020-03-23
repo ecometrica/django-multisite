@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 
+import django
 import operator
+
 from functools import reduce
 
 from django.contrib.sites.models import Site
@@ -11,14 +13,15 @@ from django.db import connections, models, router
 from django.db.models import Q
 from django.db.models.signals import pre_save, post_save
 from django.db.models.signals import post_migrate
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
 
 from .hacks import use_framework_for_site_cache
 
-try:
-    xrange
-except NameError:  # python3
+if django.VERSION < (2,):
+    from django.utils.translation import ugettext_lazy as _
+    from django.utils.encoding import python_2_unicode_compatible
+else:
+    from django.utils.translation import gettext_lazy as _
+
     xrange = range
 
 _site_domain = Site._meta.get_field('domain')
