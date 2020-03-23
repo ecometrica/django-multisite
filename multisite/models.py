@@ -5,6 +5,8 @@ import django
 import operator
 
 from functools import reduce
+from six import python_2_unicode_compatible
+from six.moves import range
 
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
@@ -21,8 +23,6 @@ if django.VERSION < (2,):
     from django.utils.encoding import python_2_unicode_compatible
 else:
     from django.utils.translation import gettext_lazy as _
-
-    xrange = range
 
 _site_domain = Site._meta.get_field('domain')
 
@@ -88,7 +88,7 @@ class AliasManager(models.Manager):
             bits = host.split('.')
 
         result = []
-        for i in xrange(0, (len(bits) + 1)):
+        for i in range(0, (len(bits) + 1)):
             if i == 0:
                 host = '.'.join(bits[i:])
             else:

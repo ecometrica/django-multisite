@@ -20,6 +20,7 @@ import pytest
 import sys
 import tempfile
 import warnings
+from six import StringIO
 from unittest import skipUnless
 
 try:
@@ -36,7 +37,6 @@ from django.http import Http404, HttpResponse
 from django.template.loader import get_template
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory as DjangoRequestFactory
-from django.utils.six import StringIO
 
 from multisite import SiteDomain, SiteID, threadlocals
 
