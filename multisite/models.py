@@ -20,7 +20,6 @@ from .hacks import use_framework_for_site_cache
 
 if django.VERSION < (2,):
     from django.utils.translation import ugettext_lazy as _
-    from django.utils.encoding import python_2_unicode_compatible
 else:
     from django.utils.translation import gettext_lazy as _
 
