@@ -2,6 +2,11 @@
 Release Notes
 =============
 
+Unreleased
+----------
+
+- Support for Django 3.0 (PR #68)
+
 1.7.0
 -----
 
