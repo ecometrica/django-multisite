@@ -13,6 +13,12 @@ try:
 except ImportError:
     from django.utils._threading_local import local
 
+try:
+    # Django > 1.10 uses MiddlewareMixin
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
+    
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -23,7 +29,7 @@ def get_request():
     return getattr(_thread_locals, 'request', None)
 
 
-class ThreadLocalsMiddleware(object):
+class ThreadLocalsMiddleware(MiddlewareMixin):
     """Middleware that saves request in thread local starage"""
     def process_request(self, request):
         _thread_locals.request = request
