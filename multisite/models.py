@@ -170,11 +170,12 @@ class Alias(models.Model):
     site = models.ForeignKey(
         Site, related_name='aliases', on_delete=models.CASCADE
     )
-    is_canonical = models.NullBooleanField(
+    is_canonical = models.BooleanField(
         _('is canonical?'),
         default=None, editable=False,
         validators=[validate_true_or_none],
         help_text=_('Does this domain name match the one in site?'),
+        null=True,
     )
     redirect_to_canonical = models.BooleanField(
         _('redirect to canonical?'),
