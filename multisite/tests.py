@@ -455,7 +455,6 @@ class TestSiteID(TestCase):
 
     def test_invalid_default(self):
         self.assertRaises(ValueError, SiteID, default='a')
-        self.assertRaises(ValueError, SiteID, default=self.site_id)
 
     def test_compare_default_site_id(self):
         self.site_id = SiteID(default=self.site.id)
