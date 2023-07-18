@@ -142,7 +142,7 @@ class NotCanonicalAliasManager(models.Manager):
 
     def get_queryset(self):
         qset = super(NotCanonicalAliasManager, self).get_queryset()
-        return qset.filter(is_canonical__isnull=True)
+        return qset.filter(is_canonical=False)
 
 
 def validate_true_or_none(value):
@@ -170,9 +170,9 @@ class Alias(models.Model):
     site = models.ForeignKey(
         Site, related_name='aliases', on_delete=models.CASCADE
     )
-    is_canonical = models.NullBooleanField(
+    is_canonical = models.BooleanField(
         _('is canonical?'),
-        default=None, editable=False,
+        default=False, editable=False,
         validators=[validate_true_or_none],
         help_text=_('Does this domain name match the one in site?'),
     )
